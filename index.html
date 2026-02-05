@@ -130,7 +130,7 @@
 <!-- SECRET PAGE -->
 <div class="modal" id="secret" style="background:rgba(0,0,0,.92)">
   <div class="modal-box">
-    <h2 style="color:#ff2d95">🔒 A Secret Just for You from Bubu</h2>
+    <h2 style="color:#ff2d95">🔒 A Secret Just for You </h2>
 
     <!-- LOCK SCREEN -->
     <div id="lockScreen">
@@ -177,7 +177,7 @@
   <div class="modal-box">
     <h2 id="modalTitle"></h2>
     <p id="modalText"></p>
-    <button class="yes" onclick="closeModal()">Okay 💕</button>
+    <button class="yes" onclick="closeModal()">Check 💕</button>
   </div>
 </div>
 
@@ -246,7 +246,7 @@ And I can’t wait to spend all the time in the world sharing that love with you
   // yes: play confetti, show modal, play audio, then secret
   yesBtn.onclick = async () => {
     launchConfetti();
-    showModal('YAYYYY 💖', `Congrats! You are officially my Valentine 💌\n\n(Psst… there is a secret waiting for you 👀)`);
+    showModal('YAYYYY 💖', `Congrats! You are officially my Valentine 💌\n\n(uiiii....There is a secret waiting for you 👀)`);
     // try to play audio (user interaction should allow it); ignore failures
     try{ await audio.play(); audioPlaying = true; audioToggle.textContent = 'Pause music'; }catch(e){ /* autoplay blocked, user can press play */ }
     // increased delay before revealing secret to give confetti + modal time
