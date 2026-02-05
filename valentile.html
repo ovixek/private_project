@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <meta name="description" content="Interactive Valentine page — funny, cute, black & pink theme." />
+
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --pink:#ff2d95;
+      --pink-soft:#ff7fc2;
+      --card:#121212;
+      --text:#ffffff;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:radial-gradient(circle at top, #1a0d14, var(--bg) 60%);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+
+    .card{
+      width:100%;
+      max-width:900px;
+      background:linear-gradient(180deg,#141414,#0e0e0e);
+      border-radius:18px;
+      padding:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.6);
+      position:relative;
+      overflow:hidden;
+    }
+
+    header{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+    .logo{
+      width:56px;height:56px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,var(--pink),#ff5fb1);
+      font-size:26px;
+    }
+
+    h1{margin:0;font-size:26px}
+    .subtitle{color:var(--pink-soft);font-size:14px}
+
+    .content{display:grid;grid-template-columns:1fr 300px;gap:18px}
+    @media(max-width:760px){.content{grid-template-columns:1fr}}
+
+    .left{background:var(--card);border-radius:14px;padding:18px}
+    .question{font-size:20px;margin-bottom:10px}
+    .highlight{color:var(--pink);font-weight:700;cursor:pointer}
+    .type{color:var(--pink-soft);min-height:24px}
+
+    .buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button{
+      padding:12px 16px;
+      border-radius:12px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      border:2px solid var(--pink);
+      background:transparent;
+      color:var(--pink);
+      transition:.2s;
+    }
+    .ghost{border-color:rgba(255,255,255,0.08);color:#ddd;background:transparent}
+    button:hover{transform:scale(1.05)}
+    .yes{background:var(--pink);color:#111;border:none}
+
+    .right{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+    .heart{font-size:90px;animation:beat 1.1s infinite;filter:drop-shadow(0 0 20px rgba(255,45,149,.4))}
+    @keyframes beat{0%{transform:scale(.9)}30%{transform:scale(1.1)}60%{transform:scale(.95)}100%{transform:scale(.9)}}
+    .note{text-align:center;font-size:14px;color:#ccc}
+
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s}
+    .modal.open{opacity:1;pointer-events:auto}
+    .modal-box{background:#111;padding:22px;border-radius:16px;max-width:720px;width:94%;text-align:center;box-shadow:0 0 40px rgba(255,45,149,.25)}
+
+    /* gallery */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:14px}
+    .photo-box{background:linear-gradient(180deg,#0f0f10,#111);border-radius:10px;padding:6px;min-height:90px;display:flex;align-items:center;justify-content:center;color:#ffbfd9;border:1px dashed rgba(255,45,149,0.12);font-size:13px;overflow:hidden}
+    .photo-box img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
+
+    canvas{position:fixed;inset:0;pointer-events:none}
+
+    /* small controls */
+    .controls{display:flex;gap:10px;justify-content:center;margin-top:12px}
+    .controls button{padding:8px 12px;font-size:13px}
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <header>
+    <div class="logo">❤️</div>
+    <div>
+      <h1>Will you be my Valentine?</h1>
+      <div class="subtitle">A silly, cute page just like you, made for you 💕</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="left">
+      <div class="question">Hey <span id="name" class="highlight">Your Name</span> —</div>
+      <div class="type" id="type"></div>
+
+      <div class="buttons">
+        <button class="yes" id="yes">Yes! 💖</button>
+        <button id="maybe" class="ghost">Hmm… maybe?</button>
+        <button id="no" class="ghost">No :(</button>
+      </div>
+
+      <p style="font-size:13px;color:#777;margin-top:10px">Tip: try clicking "No" 😈</p>
+    </div>
+
+    <div class="right">
+      <div class="heart">💗</div>
+      <div class="note">I’d bring chocolates, but I brought a website instead.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECRET PAGE -->
+<div class="modal" id="secret" style="background:rgba(0,0,0,.92)">
+  <div class="modal-box">
+    <h2 style="color:#ff2d95">🔒 A Secret Just for You from Bubu</h2>
+
+    <!-- LOCK SCREEN -->
+    <div id="lockScreen">
+      <p style="color:#ff7fc2">Enter the password to unlock 💕</p>
+      <input id="passwordInput" type="password"
+        placeholder="Hint: your DOB 😉"
+        style="width:100%;padding:10px;border-radius:8px;border:none;margin-top:8px">
+      <button class="yes" style="margin-top:12px" onclick="unlockSecret()">Unlock 💌</button>
+      <p id="lockError"
+         style="color:#ff6b9a;font-size:13px;display:none;margin-top:8px">
+        Wrong password… try again 🥺
+      </p>
+    </div>
+
+    <!-- SECRET CONTENT -->
+    <div id="secretContent" style="display:none">
+      <h2 style="color:#ff2d96de"> Hey your bhondu here.......💌</h2>
+      <pre id="secretText"
+           style="white-space:pre-wrap;font-family:inherit;color:#fff;text-align:left"></pre>
+
+      <hr style="border:1px solid #222;margin:16px 0">
+
+      <p style="color:#ff7fc2;font-weight:600;text-align:left">
+        This and a millions of more photos together
+      </p>
+
+      <div class="gallery">
+        <div class="photo-box"><img src="/photos/photos/photo1.jpeg"></div>
+        <div class="photo-box"><img src="/photos/photos/photo2.jpeg"></div>
+        <div class="photo-box"><img src="/photos/photos/photo3.jpeg"></div>
+        <div class="photo-box"><img src="/photos/photos/photo4.jpeg"></div>
+      </div>
+
+      <div class="controls">
+        <button id="audioToggle" class="ghost">Play music</button>
+        <button class="yes" style="margin-left:6px" onclick="closeSecret()">Close ❤️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <button class="yes" onclick="closeModal()">Okay 💕</button>
+  </div>
+</div>
+
+<!-- background audio file placeholder: put a valid piano mp3 at this path in your repo -->
+<audio id="bgAudio" src="audio/i_love_you_so.mp3" loop preload="auto"></audio>
+
+<canvas id="confetti"></canvas>
+
+<script>
+  // secret message (your text)
+  const secretMessage = `Every day I cannot believe how lucky I am.
+Amongst trillions and trillions of stars, over billions of years,
+for me to be alive....and to get to spend this life with you.....is so incredibly and beautifully unlikely.
+
+And yet here I am, getting the impossible chance to know you.
+
+I love you so much, Guxani. More than all the time and space in the universe can contain.
+And I can’t wait to spend all the time in the world sharing that love with you. ❤️`;
+
+  // default name
+  const defaultName = "Cutu";
+
+  // rotating lines
+  const lines = [
+    "Here's the deal  🌚,",
+    "I promise bad jokes, good food, and unlimited care 🥺",
+    "And little kalesh sometimes 😐",
+    "So… will you be my Valentine? 💘"
+  ];
+
+  // elements
+  const nameEl = document.getElementById('name');
+  const typeEl = document.getElementById('type');
+  const noBtn = document.getElementById('no');
+  const maybeBtn = document.getElementById('maybe');
+  const yesBtn = document.getElementById('yes');
+
+  // audio
+  const audio = document.getElementById('bgAudio');
+  const audioToggle = document.getElementById('audioToggle');
+  let audioPlaying = false;
+
+  // set up name edit
+  nameEl.textContent = defaultName;
+  nameEl.onclick = () => {
+    const n = prompt('Enter their name ❤️');
+    if(n) nameEl.textContent = n;
+  };
+
+  // rotating text
+  let idx = 0;
+  setInterval(() => {
+    typeEl.textContent = lines[idx];
+    idx = (idx + 1) % lines.length;
+  }, 3000);
+
+  // evasive no button
+  noBtn.onmouseenter = () => {
+    noBtn.style.transform = `translate(${Math.random()*140-70}px, ${Math.random()*70-35}px)`;
+    noBtn.textContent = ['No :(', 'Are you sure?', 'Really??', 'Think again 😭'][Math.floor(Math.random()*4)];
+  };
+
+  // maybe
+  maybeBtn.onclick = () => showModal('Hmm 👀', 'I’ll take that as a future YES 😉');
+
+  // yes: play confetti, show modal, play audio, then secret
+  yesBtn.onclick = async () => {
+    launchConfetti();
+    showModal('YAYYYY 💖', `Congrats! You are officially my Valentine 💌\n\n(Psst… there is a secret waiting for you 👀)`);
+    // try to play audio (user interaction should allow it); ignore failures
+    try{ await audio.play(); audioPlaying = true; audioToggle.textContent = 'Pause music'; }catch(e){ /* autoplay blocked, user can press play */ }
+    // increased delay before revealing secret to give confetti + modal time
+    setTimeout(showSecretPage, 4000);
+  };
+
+  // modal handling
+  const modal = document.getElementById('modal');
+  const mTitle = document.getElementById('modalTitle');
+  const mText = document.getElementById('modalText');
+  function showModal(t,m){ mTitle.textContent = t; mText.textContent = m; modal.classList.add('open'); }
+  function closeModal(){ modal.classList.remove('open'); }
+
+  // secret modal
+  const lockScreen = document.getElementById('lockScreen');
+const secretContent = document.getElementById('secretContent');
+const lockError = document.getElementById('lockError');
+const passwordInput = document.getElementById('passwordInput');
+
+// SET PASSWORD HERE (DOB – numbers only)
+const SECRET_PASSWORD = "07092005"; // change this
+
+  const secretModal = document.getElementById('secret');
+  const secretText = document.getElementById('secretText');
+  secretText.textContent = secretMessage;
+  function showSecretPage(){
+  secretModal.classList.add('open');
+  lockScreen.style.display = 'block';
+  secretContent.style.display = 'none';
+  passwordInput.value = '';
+  lockError.style.display = 'none';
+}
+  function closeSecret(){ secretModal.classList.remove('open'); stopAudio(); }
+
+function unlockSecret(){
+  if(passwordInput.value === SECRET_PASSWORD){
+    lockScreen.style.display = 'none';
+    secretContent.style.display = 'block';
+    lockError.style.display = 'none';
+  } else {
+    lockError.style.display = 'block';
+  }
+}
+
+
+  // audio toggle in secret modal
+  audioToggle.onclick = async () => {
+    if(!audioPlaying){
+      try{ await audio.play(); audioPlaying = true; audioToggle.textContent = 'Pause music'; }catch(e){ alert('Playback blocked: click anywhere to allow audio.'); }
+    } else {
+      audio.pause(); audioPlaying = false; audioToggle.textContent = 'Play music';
+    }
+  };
+
+  function stopAudio(){ if(audio && !audio.paused){ audio.pause(); audio.currentTime = 0; audioPlaying = false; audioToggle.textContent = 'Play music'; } }
+
+  // confetti
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  function launchConfetti(){
+    canvas.width = innerWidth; canvas.height = innerHeight;
+    let pieces = Array.from({length:140},()=>({x:Math.random()*canvas.width,y:-20,v:2+Math.random()*4,s:4+Math.random()*6,color:Math.random()>0.5?'#ff2d95':'#ffc1dd'}));
+    let t=0;
+    const anim = setInterval(()=>{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(p=>{ p.y+=p.v; ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,p.s,p.s); });
+      if(t++>140){ clearInterval(anim); ctx.clearRect(0,0,canvas.width,canvas.height); }
+    },16);
+  }
+
+  // make images responsive when repo images are added — no JS required; sample images use <img> and CSS object-fit
+  // but we add a tiny safety: if an image fails to load we show the filename text instead
+  document.querySelectorAll('.photo-box img').forEach(img=>{
+    img.addEventListener('error', (e)=>{
+      const parent = img.parentElement; parent.textContent = img.getAttribute('src'); parent.classList.add('photo-error');
+    });
+  });
+
+  // accessibility: allow pressing Enter on yes button
+  yesBtn.addEventListener('keyup', (e)=>{ if(e.key==='Enter') yesBtn.click(); });
+
+  // close secret with Escape
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ if(secretModal.classList.contains('open')) closeSecret(); if(modal.classList.contains('open')) closeModal(); } });
+
+</script>
+
+</body>
+</html>
