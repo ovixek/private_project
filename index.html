@@ -93,6 +93,18 @@
     /* small controls */
     .controls{display:flex;gap:10px;justify-content:center;margin-top:12px}
     .controls button{padding:8px 12px;font-size:13px}
+      /* Mobile fix: allow secret modal scrolling */
+    #secret .modal-box {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Improve text wrapping on mobile */
+    #secretText {
+    white-space: pre-wrap;
+    word-break: break-word;
+    }
+
   </style>
 </head>
 <body>
