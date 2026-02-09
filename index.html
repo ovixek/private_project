@@ -195,6 +195,8 @@
 
 <!-- background audio file placeholder: put a valid piano mp3 at this path in your repo -->
 <audio id="bgAudio" src="audio/UPOHAR.mp3" loop preload="auto"></audio>
+<audio id="maybeAudio" src="audio/maybe.mp3" preload="auto"></audio>
+
 
 <canvas id="confetti"></canvas>
 
@@ -214,10 +216,11 @@ And I can’t wait to spend all the time in the world sharing that love with you
 
   // rotating lines
   const lines = [
-    "Here's the deal  🌚,",
-    "I promise bad jokes, good food, and unlimited care 🥺",
+    "Here's the deal 🌚",
+    "I promise bad jokes, good food, warm cuddles and unlimited care 🥺",
     "And little kalesh sometimes 😐",
-    "So… will you be my Valentine? 💘"
+    "So… what do you think?",
+    "will you be my Valentine? 💘",
   ];
 
   // elements
@@ -229,6 +232,7 @@ And I can’t wait to spend all the time in the world sharing that love with you
 
   // audio
   const audio = document.getElementById('bgAudio');
+  const maybeAudio = document.getElementById('maybeAudio');
   const audioToggle = document.getElementById('audioToggle');
   let audioPlaying = false;
 
@@ -253,7 +257,17 @@ And I can’t wait to spend all the time in the world sharing that love with you
   };
 
   // maybe
-  maybeBtn.onclick = () => showModal('Hmm 👀', 'I’ll take that as a future YES 😉');
+ maybeBtn.onclick = async () => {
+  try {
+    maybeAudio.currentTime = 0;
+    await maybeAudio.play();
+  } catch (e) {
+    // autoplay might be blocked, ignore silently
+  }
+
+  showModal('Hmm 👀', 'I’ll take that as a future YES 😉');
+};
+
 
   // yes: play confetti, show modal, play audio, then secret
   yesBtn.onclick = async () => {
